@@ -1,4 +1,4 @@
-package com.nick.dagger2sample.injection.modules;
+package com.nick.dagger2sample.database;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

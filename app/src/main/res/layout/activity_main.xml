@@ -9,15 +9,9 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <Button
-        android:id="@+id/btnSaveToPreferences"
+        android:id="@+id/btnGetPosts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save" />
-
-    <Button
-        android:id="@+id/btnShow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show" />
+        android:text="Get posts" />
 
 </LinearLayout>
