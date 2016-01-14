@@ -30,7 +30,7 @@ public class MainActivity extends BaseActivity implements RequestExecutor.OnRequ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        DaggerApplication.getNetworkComponent(this).inject(this);
+        DaggerApplication.getApplicationComponent(this).inject(this);
     }
 
     @OnClick(R.id.btnGetPosts)
