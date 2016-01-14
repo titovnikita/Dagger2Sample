@@ -1,5 +1,7 @@
 package com.nick.dagger2sample.network;
 
+import com.nick.dagger2sample.network.requests.RequestExecutor;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -32,4 +34,9 @@ public class NetworkModule {
         return retrofit.create(Api.class);
     }
 
+    @Singleton
+    @Provides
+    public RequestExecutor provideRequestExecutor(Api api) {
+        return new RequestExecutor(api);
+    }
 }

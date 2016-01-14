@@ -6,7 +6,8 @@ import android.widget.Button;
 import com.nick.dagger2sample.R;
 import com.nick.dagger2sample.core.DaggerApplication;
 import com.nick.dagger2sample.database.models.Post;
-import com.nick.dagger2sample.network.Api;
+import com.nick.dagger2sample.network.requests.RequestExecutor;
+import com.nick.dagger2sample.network.requests.GetPostsRequest;
 
 import java.util.List;
 
@@ -15,16 +16,14 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.Callback;
 import retrofit.Response;
-import retrofit.Retrofit;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements RequestExecutor.OnRequestExecuted {
 
     @Bind(R.id.btnGetPosts)
     Button btnGetPosts;
     @Inject
-    Api networkApi;
+    RequestExecutor requestExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +35,25 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btnGetPosts)
     void onGetPostsButtonClick() {
-        networkApi.getPosts().enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Response<List<Post>> response, Retrofit retrofit) {
-                if (response.isSuccess()) {
-                    makeToast(response.body().size());
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                t.printStackTrace();
-            }
-        });
+        requestExecutor.execute(new GetPostsRequest(), this);
     }
 
+    @Override
+    public void onSuccess(String requestType, Response response) {
+        switch (requestType) {
+            case GetPostsRequest.REQUEST_TYPE:
+                List<Post> posts = (List<Post>) response.body();
+                makeToast(posts.size());
+                break;
+        }
+    }
+
+    @Override
+    public void onFailure(String requestType, int code) {
+        switch (requestType) {
+            case GetPostsRequest.REQUEST_TYPE:
+                makeToast("Error");
+                break;
+        }
+    }
 }
