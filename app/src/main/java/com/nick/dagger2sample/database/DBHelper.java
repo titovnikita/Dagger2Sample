@@ -14,11 +14,8 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private Context context;
-
     public DBHelper(Context context) {
         super(context, DbInfo.NAME, null, DbInfo.VERSION);
-        this.context = context;
     }
 
     @Override
