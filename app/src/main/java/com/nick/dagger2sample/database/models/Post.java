@@ -1,10 +1,29 @@
 package com.nick.dagger2sample.database.models;
 
-public class Post {
+import android.content.ContentValues;
+
+import com.nick.dagger2sample.database.tables.PostsTable;
+
+public class Post extends BaseModel {
     private long id;
     private long userId;
     private String title;
     private String body;
+
+    @Override
+    public ContentValues toContentValues() {
+        ContentValues cv = new ContentValues();
+        cv.put(PostsTable.ID, id);
+        cv.put(PostsTable.USER_ID, userId);
+        cv.put(PostsTable.TITLE, title);
+        cv.put(PostsTable.BODY, body);
+        return cv;
+    }
+
+    @Override
+    public void fromContentValues(ContentValues cv) {
+
+    }
 
     public long getId() {
         return id;

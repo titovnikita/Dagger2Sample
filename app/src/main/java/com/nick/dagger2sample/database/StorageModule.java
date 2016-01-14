@@ -4,7 +4,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.nick.dagger2sample.core.DaggerApplication;
+import com.nick.dagger2sample.database.models.BaseModel;
 import com.nick.dagger2sample.utils.SharedHelper;
+
+import java.util.List;
 
 import javax.inject.Singleton;
 
@@ -29,7 +32,13 @@ public class StorageModule {
 
     @Singleton
     @Provides
-    public SharedHelper provideSharedPreferencesHelper(SharedPreferences sharedPreferences){
+    public SharedHelper provideSharedPreferencesHelper(SharedPreferences sharedPreferences) {
         return new SharedHelper(sharedPreferences);
+    }
+
+    @Singleton
+    @Provides
+    public DBHelper provideDatabaseHelper() {
+        return new DBHelper(application.getBaseContext());
     }
 }

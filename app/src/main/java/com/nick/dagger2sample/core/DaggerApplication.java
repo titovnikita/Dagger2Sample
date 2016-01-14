@@ -12,8 +12,8 @@ public class DaggerApplication extends Application {
     private ApplicationComponent applicationComponent;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
 
         applicationComponent = DaggerApplicationComponent.builder()
                 .networkModule(new NetworkModule(API_ENDPOINT))

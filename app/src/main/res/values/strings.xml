@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Dagger2Sample</string>
+    <string name="posts_empty_view">There no posts downloaded, tap get posts to download.</string>
+    <string name="btn_get_posts">Get posts</string>
+    <string name="posts_uploaded">Posts downloaded!</string>
+    <string name="error">Error</string>
 </resources>

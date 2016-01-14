@@ -1,6 +1,9 @@
 package com.nick.dagger2sample.network.requests;
 
+import android.content.Context;
+
 import com.nick.dagger2sample.database.models.Post;
+import com.nick.dagger2sample.database.tables.PostsTable;
 import com.nick.dagger2sample.network.Api;
 
 import java.io.IOException;
@@ -10,6 +13,10 @@ import retrofit.Response;
 
 public class GetPostsRequest extends BaseRequest {
     public static final String REQUEST_TYPE = "get_posts_request";
+
+    public GetPostsRequest(Context context) {
+        super(context);
+    }
 
     @Override
     public String getRequestType() {
@@ -21,6 +28,9 @@ public class GetPostsRequest extends BaseRequest {
         Response<List<Post>> response;
         try {
             response = api.getPosts().execute();
+            if (response != null && response.isSuccess()) {
+                saveToDatabase(response.body(), PostsTable.CONTENT_URI);
+            }
         } catch (IOException exception) {
             response = null;
             log(exception.toString());

@@ -12,6 +12,18 @@
         android:id="@+id/btnGetPosts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Get posts" />
+        android:text="@string/btn_get_posts" />
+
+    <ListView
+        android:id="@+id/lvPosts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tvEmptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/posts_empty_view"
+        android:visibility="gone" />
 
 </LinearLayout>
