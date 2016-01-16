@@ -13,7 +13,7 @@ import com.nick.dagger2sample.database.tables.PostsTable;
 
 public class PostsAdapter extends CursorAdapter {
 
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
     public PostsAdapter(Context context, Cursor c, boolean autoRequery) {
         super(context, c, autoRequery);

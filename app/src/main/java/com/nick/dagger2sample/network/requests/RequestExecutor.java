@@ -13,8 +13,8 @@ import retrofit.Response;
 public class RequestExecutor {
     private final int THREAD_POOL_COUNT = 3;
 
-    private Executor executor;
-    private Api api;
+    private final Executor executor;
+    private final Api api;
 
     public RequestExecutor(Api api) {
         this.api = api;

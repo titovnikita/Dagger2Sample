@@ -21,7 +21,7 @@ public class DaggerApplication extends Application {
                 .build();
     }
 
-    public ApplicationComponent getApplicationComponent() {
+    private ApplicationComponent getApplicationComponent() {
         return applicationComponent;
     }
 

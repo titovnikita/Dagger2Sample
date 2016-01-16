@@ -7,7 +7,7 @@ import java.util.Random;
 public class SharedHelper {
     private final String KEY_VALUE = "value";
 
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
     public SharedHelper(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;

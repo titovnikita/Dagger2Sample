@@ -14,7 +14,7 @@ import retrofit.Response;
 public abstract class BaseRequest {
     private static final String TAG = "REQUEST";
 
-    protected Context context;
+    private Context context;
 
     public BaseRequest(Context context) {
         this.context = context;
