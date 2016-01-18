@@ -1,6 +1,7 @@
 package com.nick.dagger2sample.database.models;
 
 import android.content.ContentValues;
+import android.net.Uri;
 
 import com.nick.dagger2sample.database.tables.PostsTable;
 
@@ -22,7 +23,15 @@ public class Post extends BaseModel {
 
     @Override
     public void fromContentValues(ContentValues cv) {
+        this.id = cv.getAsLong(PostsTable.ID);
+        this.userId = cv.getAsLong(PostsTable.USER_ID);
+        this.title = cv.getAsString(PostsTable.TITLE);
+        this.body = cv.getAsString(PostsTable.BODY);
+    }
 
+    @Override
+    public Uri getContentUri() {
+        return PostsTable.CONTENT_URI;
     }
 
     public long getId() {

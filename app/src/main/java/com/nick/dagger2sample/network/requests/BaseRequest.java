@@ -1,40 +1,24 @@
 package com.nick.dagger2sample.network.requests;
 
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
-import com.nick.dagger2sample.database.models.BaseModel;
-import com.nick.dagger2sample.network.Api;
+import rx.Observer;
+import rx.Subscription;
 
-import java.util.List;
-
-import retrofit.Response;
-
-public abstract class BaseRequest {
+public abstract class BaseRequest<T> {
     private static final String TAG = "REQUEST";
+    protected final long RETRY_COUNT = 3;
+    protected final long TIMEOUT_SECONDS = 3;
 
-    private Context context;
+    protected Observer<T> observer;
 
-    public BaseRequest(Context context) {
-        this.context = context;
+    public BaseRequest(Context context, Observer<T> observer) {
+        this.observer = observer;
+
+        injectApi(context);
     }
 
-    protected void saveToDatabase(final List<? extends BaseModel> list, final Uri contentUri) {
-        for (BaseModel item : list) {
-            context.getContentResolver().insert(contentUri, item.toContentValues());
-        }
-    }
+    protected abstract void injectApi(Context context);
 
-    protected void saveToDatabase(final BaseModel item, final Uri contentUri) {
-        context.getContentResolver().insert(contentUri, item.toContentValues());
-    }
-
-    public abstract String getRequestType();
-
-    public abstract Response execute(Api api);
-
-    public void log(String message) {
-        Log.d(TAG, message);
-    }
+    public abstract Subscription execute();
 }

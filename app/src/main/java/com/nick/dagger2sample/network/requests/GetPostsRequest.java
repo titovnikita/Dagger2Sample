@@ -2,39 +2,40 @@ package com.nick.dagger2sample.network.requests;
 
 import android.content.Context;
 
+import com.nick.dagger2sample.core.DaggerApplication;
 import com.nick.dagger2sample.database.models.Post;
-import com.nick.dagger2sample.database.tables.PostsTable;
 import com.nick.dagger2sample.network.Api;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import retrofit.Response;
+import javax.inject.Inject;
 
-public class GetPostsRequest extends BaseRequest {
-    public static final String REQUEST_TYPE = "get_posts_request";
+import rx.Observer;
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 
-    public GetPostsRequest(Context context) {
-        super(context);
+public class GetPostsRequest extends BaseRequest<List<Post>> {
+
+    @Inject
+    Api api;
+
+    public GetPostsRequest(Context context, Observer<List<Post>> observer) {
+        super(context, observer);
     }
 
     @Override
-    public String getRequestType() {
-        return REQUEST_TYPE;
+    protected void injectApi(Context context) {
+        DaggerApplication.getApplicationComponent(context).inject(this);
     }
 
     @Override
-    public Response execute(Api api) {
-        Response<List<Post>> response;
-        try {
-            response = api.getPosts().execute();
-            if (response != null && response.isSuccess()) {
-                saveToDatabase(response.body(), PostsTable.CONTENT_URI);
-            }
-        } catch (IOException exception) {
-            response = null;
-            log(exception.toString());
-        }
-        return response;
+    public Subscription execute() {
+        return api.getPosts()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .retry(RETRY_COUNT)
+                .timeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .subscribe(observer);
     }
 }

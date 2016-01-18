@@ -6,32 +6,36 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.nick.dagger2sample.R;
 import com.nick.dagger2sample.core.DaggerApplication;
+import com.nick.dagger2sample.database.DBHelper;
+import com.nick.dagger2sample.database.models.Post;
 import com.nick.dagger2sample.database.tables.PostsTable;
 import com.nick.dagger2sample.network.requests.GetPostsRequest;
-import com.nick.dagger2sample.network.requests.RequestExecutor;
 import com.nick.dagger2sample.ui.adapters.PostsAdapter;
+import com.nick.dagger2sample.utils.RxUtils;
 
-import javax.inject.Inject;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Response;
+import rx.Observer;
+import rx.subscriptions.CompositeSubscription;
 
-public class MainActivity extends BaseActivity implements RequestExecutor.OnRequestExecuted {
+public class MainActivity extends BaseActivity {
 
     private static final int LOADER_ID_ITEM = 1;
 
-    @Inject
-    RequestExecutor requestExecutor;
     @Bind(R.id.btnGetPosts)
     Button btnGetPosts;
     @Bind(R.id.lvPosts)
     ListView lvPosts;
 
+    private CompositeSubscription subscriptions;
     private PostsAdapter adapter;
 
     @Override
@@ -41,6 +45,7 @@ public class MainActivity extends BaseActivity implements RequestExecutor.OnRequ
         ButterKnife.bind(this);
         DaggerApplication.getApplicationComponent(this).inject(this);
 
+        subscriptions = new CompositeSubscription();
         adapter = new PostsAdapter(this, getContentResolver().query(PostsTable.CONTENT_URI, null, null, null, null), true);
         lvPosts.setEmptyView(findViewById(R.id.tvEmptyView));
         lvPosts.setAdapter(adapter);
@@ -49,27 +54,37 @@ public class MainActivity extends BaseActivity implements RequestExecutor.OnRequ
 
     @OnClick(R.id.btnGetPosts)
     void onGetPostsButtonClick() {
-        requestExecutor.execute(new GetPostsRequest(this), this);
+        subscriptions.add(new GetPostsRequest(this, postsObserver).execute());
     }
 
     @Override
-    public void onSuccess(String requestType, Response response) {
-        switch (requestType) {
-            case GetPostsRequest.REQUEST_TYPE:
-                makeToast(getString(R.string.posts_uploaded));
-                break;
-        }
+    protected void onResume() {
+        super.onResume();
+        RxUtils.restoreSubscriptions(subscriptions);
     }
 
     @Override
-    public void onFailure(String requestType, int code) {
-        switch (requestType) {
-            case GetPostsRequest.REQUEST_TYPE:
-                makeToast(getString(R.string.error));
-                break;
-        }
+    protected void onPause() {
+        super.onPause();
+        RxUtils.unsubscribe(subscriptions);
     }
 
+    Observer<List<Post>> postsObserver = new Observer<List<Post>>() {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(List<Post> posts) {
+            DBHelper.bulkInsert(getBaseContext(), posts);
+        }
+    };
 
     private class PostsLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
 

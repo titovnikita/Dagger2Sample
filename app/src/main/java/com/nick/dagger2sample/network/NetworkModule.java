@@ -1,6 +1,5 @@
 package com.nick.dagger2sample.network;
 
-import com.nick.dagger2sample.network.requests.RequestExecutor;
 
 import javax.inject.Singleton;
 
@@ -8,6 +7,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
 
 @Singleton
 @Module
@@ -24,6 +24,7 @@ public class NetworkModule {
     public Retrofit provideRestAdapter() {
         return new Retrofit.Builder()
                 .baseUrl(API_ENDPOINT)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -34,9 +35,4 @@ public class NetworkModule {
         return retrofit.create(Api.class);
     }
 
-    @Singleton
-    @Provides
-    public RequestExecutor provideRequestExecutor(Api api) {
-        return new RequestExecutor(api);
-    }
 }

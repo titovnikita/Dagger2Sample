@@ -26,4 +26,10 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
+
+    public static void bulkInsert(Context context, List<? extends BaseModel> objects) {
+        for (BaseModel obj : objects) {
+            context.getContentResolver().insert(obj.getContentUri(), obj.toContentValues());
+        }
+    }
 }

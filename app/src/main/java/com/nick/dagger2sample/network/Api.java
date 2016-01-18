@@ -4,10 +4,10 @@ import com.nick.dagger2sample.database.models.Post;
 
 import java.util.List;
 
-import retrofit.Call;
 import retrofit.http.GET;
+import rx.Observable;
 
 public interface Api {
     @GET("posts")
-    Call<List<Post>> getPosts();
+    Observable<List<Post>> getPosts();
 }
