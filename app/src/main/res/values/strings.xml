@@ -4,4 +4,9 @@
     <string name="btn_get_posts">Get posts</string>
     <string name="posts_uploaded">Posts downloaded!</string>
     <string name="error">Error</string>
+    <string name="btn_input">Input</string>
+    <string name="submit">Submit</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>

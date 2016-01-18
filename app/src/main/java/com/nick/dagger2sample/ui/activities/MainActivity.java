@@ -1,9 +1,11 @@
 package com.nick.dagger2sample.ui.activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -30,12 +32,13 @@ public class MainActivity extends BaseActivity {
 
     private static final int LOADER_ID_ITEM = 1;
 
+    @Bind(R.id.btnStartInput)
+    Button btnStartInput;
     @Bind(R.id.btnGetPosts)
     Button btnGetPosts;
     @Bind(R.id.lvPosts)
     ListView lvPosts;
 
-    private CompositeSubscription subscriptions;
     private PostsAdapter adapter;
 
     @Override
@@ -45,29 +48,22 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         DaggerApplication.getApplicationComponent(this).inject(this);
 
-        subscriptions = new CompositeSubscription();
         adapter = new PostsAdapter(this, getContentResolver().query(PostsTable.CONTENT_URI, null, null, null, null), true);
         lvPosts.setEmptyView(findViewById(R.id.tvEmptyView));
         lvPosts.setAdapter(adapter);
         getSupportLoaderManager().initLoader(LOADER_ID_ITEM, Bundle.EMPTY, new PostsLoaderCallback());
     }
 
+    @OnClick(R.id.btnStartInput)
+    void onStartInputButtonClick() {
+        startActivity(new Intent(this, InputActivity.class));
+    }
+
     @OnClick(R.id.btnGetPosts)
     void onGetPostsButtonClick() {
-        subscriptions.add(new GetPostsRequest(this, postsObserver).execute());
+        addSubscription(new GetPostsRequest(this, postsObserver).execute());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RxUtils.restoreSubscriptions(subscriptions);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        RxUtils.unsubscribe(subscriptions);
-    }
 
     Observer<List<Post>> postsObserver = new Observer<List<Post>>() {
         @Override
@@ -77,7 +73,7 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(getClass().getSimpleName(), e.toString());
         }
 
         @Override
