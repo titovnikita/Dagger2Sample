@@ -7,7 +7,7 @@ import com.nick.dagger2sample.database.StorageModule;
 import com.nick.dagger2sample.network.NetworkModule;
 
 public class DaggerApplication extends Application {
-    private final String API_ENDPOINT = "http://jsonplaceholder.typicode.com/";
+    private final String API_ENDPOINT = "http://jsonplaceholder.typicode.com";
 
     private ApplicationComponent applicationComponent;
 

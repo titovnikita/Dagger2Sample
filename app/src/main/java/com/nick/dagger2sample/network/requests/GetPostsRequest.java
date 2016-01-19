@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class GetPostsRequest extends BaseRequest<List<Post>> {
@@ -33,7 +34,7 @@ public class GetPostsRequest extends BaseRequest<List<Post>> {
     public Subscription execute() {
         return api.getPosts()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .retry(RETRY_COUNT)
                 .timeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .subscribe(observer);

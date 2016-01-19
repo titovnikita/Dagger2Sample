@@ -8,7 +8,6 @@ import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.nick.dagger2sample.R;
 import com.nick.dagger2sample.core.DaggerApplication;
@@ -17,16 +16,13 @@ import com.nick.dagger2sample.database.models.Post;
 import com.nick.dagger2sample.database.tables.PostsTable;
 import com.nick.dagger2sample.network.requests.GetPostsRequest;
 import com.nick.dagger2sample.ui.adapters.PostsAdapter;
-import com.nick.dagger2sample.utils.RxUtils;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.Response;
 import rx.Observer;
-import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends BaseActivity {
 
@@ -68,7 +64,6 @@ public class MainActivity extends BaseActivity {
     Observer<List<Post>> postsObserver = new Observer<List<Post>>() {
         @Override
         public void onCompleted() {
-
         }
 
         @Override
