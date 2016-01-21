@@ -6,7 +6,7 @@ import rx.subscriptions.CompositeSubscription;
 public class RxUtils {
 
     public static void unsubscribe(Subscription subscription) {
-        if (subscription != null) {
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }

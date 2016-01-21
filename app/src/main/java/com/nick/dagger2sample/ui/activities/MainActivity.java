@@ -1,11 +1,9 @@
 package com.nick.dagger2sample.ui.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.util.Log;
+import android.support.v4.content.Loader;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -14,15 +12,16 @@ import com.nick.dagger2sample.core.DaggerApplication;
 import com.nick.dagger2sample.database.DBHelper;
 import com.nick.dagger2sample.database.models.Post;
 import com.nick.dagger2sample.database.tables.PostsTable;
-import com.nick.dagger2sample.network.requests.GetPostsRequest;
+import com.nick.dagger2sample.network.loaders.PostsLoader;
 import com.nick.dagger2sample.ui.adapters.PostsAdapter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observer;
 
 public class MainActivity extends BaseActivity {
 
@@ -36,6 +35,7 @@ public class MainActivity extends BaseActivity {
     ListView lvPosts;
 
     private PostsAdapter adapter;
+    private PostsLoader loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +44,10 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         DaggerApplication.getApplicationComponent(this).inject(this);
 
-        adapter = new PostsAdapter(this, getContentResolver().query(PostsTable.CONTENT_URI, null, null, null, null), true);
+        adapter = new PostsAdapter(this, DBHelper.queryAll(this, PostsTable.CONTENT_URI, Post.class));
         lvPosts.setEmptyView(findViewById(R.id.tvEmptyView));
         lvPosts.setAdapter(adapter);
-        getSupportLoaderManager().initLoader(LOADER_ID_ITEM, Bundle.EMPTY, new PostsLoaderCallback());
+        loader = (PostsLoader) getSupportLoaderManager().initLoader(LOADER_ID_ITEM, Bundle.EMPTY, new PostsLoaderCallback());
     }
 
     @OnClick(R.id.btnStartInput)
@@ -57,42 +57,26 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btnGetPosts)
     void onGetPostsButtonClick() {
-        addSubscription(new GetPostsRequest(this, postsObserver).execute());
+        loader.loadNewData();
     }
 
+    private class PostsLoaderCallback implements LoaderManager.LoaderCallbacks<List<Post>> {
 
-    Observer<List<Post>> postsObserver = new Observer<List<Post>>() {
         @Override
-        public void onCompleted() {
+        public Loader<List<Post>> onCreateLoader(int id, Bundle args) {
+            return new PostsLoader(getBaseContext());
         }
 
         @Override
-        public void onError(Throwable e) {
-            Log.e(getClass().getSimpleName(), e.toString());
+        public void onLoadFinished(Loader<List<Post>> loader, List<Post> data) {
+            DBHelper.bulkInsert(getBaseContext(), data);
+            adapter.swapData(data);
         }
 
         @Override
-        public void onNext(List<Post> posts) {
-            DBHelper.bulkInsert(getBaseContext(), posts);
-        }
-    };
-
-    private class PostsLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
-
-        @Override
-        public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new CursorLoader(MainActivity.this, PostsTable.CONTENT_URI, null,
-                    null, null, null);
-        }
-
-        @Override
-        public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-            adapter.changeCursor(data);
-        }
-
-        @Override
-        public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-            adapter.changeCursor(null);
+        public void onLoaderReset(Loader<List<Post>> loader) {
+            adapter.swapData(new ArrayList<Post>());
         }
     }
+
 }

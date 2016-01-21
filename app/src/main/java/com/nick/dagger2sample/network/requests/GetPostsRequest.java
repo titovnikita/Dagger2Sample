@@ -27,7 +27,7 @@ public class GetPostsRequest extends BaseRequest<List<Post>> {
 
     @Override
     protected void injectApi(Context context) {
-        DaggerApplication.getApplicationComponent(context).inject(this);
+//        DaggerApplication.getApplicationComponent(context).inject(this);
     }
 
     @Override
