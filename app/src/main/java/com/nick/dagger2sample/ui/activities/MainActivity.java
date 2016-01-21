@@ -9,15 +9,15 @@ import android.widget.ListView;
 
 import com.nick.dagger2sample.R;
 import com.nick.dagger2sample.core.DaggerApplication;
-import com.nick.dagger2sample.database.DBHelper;
 import com.nick.dagger2sample.database.models.Post;
-import com.nick.dagger2sample.database.tables.PostsTable;
+import com.nick.dagger2sample.database.tables.RealmManager;
 import com.nick.dagger2sample.network.loaders.PostsLoader;
 import com.nick.dagger2sample.ui.adapters.PostsAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,6 +34,9 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.lvPosts)
     ListView lvPosts;
 
+    @Inject
+    RealmManager realmManager;
+
     private PostsAdapter adapter;
     private PostsLoader loader;
 
@@ -44,7 +47,7 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         DaggerApplication.getApplicationComponent(this).inject(this);
 
-        adapter = new PostsAdapter(this, DBHelper.queryAll(this, PostsTable.CONTENT_URI, Post.class));
+        adapter = new PostsAdapter(this, new ArrayList<Post>());
         lvPosts.setEmptyView(findViewById(R.id.tvEmptyView));
         lvPosts.setAdapter(adapter);
         loader = (PostsLoader) getSupportLoaderManager().initLoader(LOADER_ID_ITEM, Bundle.EMPTY, new PostsLoaderCallback());
@@ -69,12 +72,13 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onLoadFinished(Loader<List<Post>> loader, List<Post> data) {
-            DBHelper.bulkInsert(getBaseContext(), data);
+            realmManager.saveList(data);
             adapter.swapData(data);
         }
 
         @Override
         public void onLoaderReset(Loader<List<Post>> loader) {
+            realmManager.release();
             adapter.swapData(new ArrayList<Post>());
         }
     }

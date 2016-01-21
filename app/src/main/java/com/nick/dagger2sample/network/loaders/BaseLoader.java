@@ -13,7 +13,7 @@ import rx.Subscription;
 public abstract class BaseLoader<T> extends Loader<T> {
 
     protected final long RETRY_COUNT = 3;
-    protected final long TIMEOUT_SECONDS = 3;
+    protected final long TIMEOUT_SECONDS = 10;
 
     private T cache;
     private Subscription subscription;

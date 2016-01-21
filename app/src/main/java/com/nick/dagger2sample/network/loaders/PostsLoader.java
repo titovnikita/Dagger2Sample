@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class PostsLoader extends BaseLoader<List<Post>> {
@@ -32,7 +33,7 @@ public class PostsLoader extends BaseLoader<List<Post>> {
     protected Observable callApi() {
         return api.getPosts()
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .retry(RETRY_COUNT)
                 .timeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }

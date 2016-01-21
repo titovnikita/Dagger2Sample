@@ -1,20 +1,16 @@
 package com.nick.dagger2sample.ui.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.nick.dagger2sample.R;
 import com.nick.dagger2sample.database.models.Post;
-import com.nick.dagger2sample.database.tables.PostsTable;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class PostsAdapter extends BaseAdapter {
 

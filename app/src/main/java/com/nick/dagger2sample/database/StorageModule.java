@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 
 import com.nick.dagger2sample.core.DaggerApplication;
 import com.nick.dagger2sample.database.models.BaseModel;
+import com.nick.dagger2sample.database.tables.RealmManager;
 import com.nick.dagger2sample.utils.SharedHelper;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
 
 @Singleton
 @Module
@@ -40,5 +42,15 @@ public class StorageModule {
     @Provides
     public DBHelper provideDatabaseHelper() {
         return new DBHelper(application.getBaseContext());
+    }
+
+    @Provides
+    public Realm provideRealm() {
+        return Realm.getInstance(application);
+    }
+
+    @Provides
+    public RealmManager provideRealmManager(Realm realm) {
+        return new RealmManager(realm);
     }
 }
