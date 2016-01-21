@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.nick.dagger2sample.R;
 import com.nick.dagger2sample.core.DaggerApplication;
 import com.nick.dagger2sample.database.models.Post;
-import com.nick.dagger2sample.database.tables.RealmManager;
+import com.nick.dagger2sample.database.RealmManager;
 import com.nick.dagger2sample.network.loaders.PostsLoader;
 import com.nick.dagger2sample.ui.adapters.PostsAdapter;
 

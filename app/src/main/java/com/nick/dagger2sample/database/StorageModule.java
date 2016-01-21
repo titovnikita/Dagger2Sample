@@ -4,11 +4,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.nick.dagger2sample.core.DaggerApplication;
-import com.nick.dagger2sample.database.models.BaseModel;
-import com.nick.dagger2sample.database.tables.RealmManager;
 import com.nick.dagger2sample.utils.SharedHelper;
-
-import java.util.List;
 
 import javax.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.nick.dagger2sample.database.tables;
+package com.nick.dagger2sample.database;
 
 import java.util.List;
 
