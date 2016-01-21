@@ -60,7 +60,9 @@ public class MainActivity extends BaseActivity {
 
     @OnClick(R.id.btnGetPosts)
     void onGetPostsButtonClick() {
-        loader.loadNewData();
+        if (loader != null) {
+            loader.loadNewData();
+        }
     }
 
     private class PostsLoaderCallback implements LoaderManager.LoaderCallbacks<List<Post>> {
@@ -77,8 +79,9 @@ public class MainActivity extends BaseActivity {
         }
 
         @Override
-        public void onLoaderReset(Loader<List<Post>> loader) {
+        public void onLoaderReset(Loader<List<Post>> postsLoader) {
             adapter.swapData(new ArrayList<Post>());
+            loader = null;
         }
     }
 
