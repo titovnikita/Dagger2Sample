@@ -78,7 +78,6 @@ public class MainActivity extends BaseActivity {
 
         @Override
         public void onLoaderReset(Loader<List<Post>> loader) {
-            realmManager.release();
             adapter.swapData(new ArrayList<Post>());
         }
     }

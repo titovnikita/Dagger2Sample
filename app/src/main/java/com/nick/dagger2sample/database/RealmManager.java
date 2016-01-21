@@ -1,35 +1,40 @@
 package com.nick.dagger2sample.database;
 
+import android.content.Context;
+
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
 
 public class RealmManager {
-    public final Realm realm;
+    public final Context context;
 
-    public RealmManager(Realm realm) {
-        this.realm = realm;
+    public RealmManager(Context context) {
+        this.context = context;
+    }
+
+    private Realm getRealm() {
+        return Realm.getInstance(context);
     }
 
     public List<? extends RealmObject> getListOf(Class clazz) {
-        return realm.where(clazz).findAll();
+        return getRealm().where(clazz).findAll();
     }
 
     public void saveObject(RealmObject realmObject) {
+        Realm realm = getRealm();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(realmObject);
         realm.commitTransaction();
-    }
-
-    public void saveList(List<? extends RealmObject> realmObjects) {
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(realmObjects);
-        realm.commitTransaction();
-    }
-
-    public void release() {
         realm.close();
     }
 
+    public void saveList(List<? extends RealmObject> realmObjects) {
+        Realm realm = getRealm();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(realmObjects);
+        realm.commitTransaction();
+        realm.close();
+    }
 }

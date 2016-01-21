@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.realm.Realm;
 
 @Singleton
 @Module
@@ -41,12 +40,7 @@ public class StorageModule {
     }
 
     @Provides
-    public Realm provideRealm() {
-        return Realm.getInstance(application);
-    }
-
-    @Provides
-    public RealmManager provideRealmManager(Realm realm) {
-        return new RealmManager(realm);
+    public RealmManager provideRealmManager() {
+        return new RealmManager(application);
     }
 }
